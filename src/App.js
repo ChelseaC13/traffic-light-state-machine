@@ -30,18 +30,28 @@ const App = () => {
     YellowOn: false,
     GreenOn: true,
   });
-
   // Run once to setup the state machine
   useEffect(() => {
-    service.start();
+     
 
     service.onTransition(state => {
-      console.log(state);
-      // Your code here to change lightStatus when the 
-      //   state of the state machine changes
-
-    });
-  }, [])
+     console.log(state);
+      switch (state.value) {
+        case "GreenOn": 
+          setLightStatus(GREEN_LIGHT);
+          break;
+        case "YellowOn": 
+          setLightStatus(YELLOW_LIGHT);
+          break;
+        case "RedOn": 
+          setLightStatus(RED_LIGHT)
+          break;
+        default:
+          console.log("Invalid state reached");
+    }
+  },[]);
+  service.start(); 
+  });
 
   const changeLight = () => {
     console.log('changing');
@@ -57,11 +67,13 @@ const App = () => {
           <TrafficLight {...lightStatus} />
         </div>
         <div>
-          <button onClick={changeLight}>Change</button>
+          <button onClick={ () => service.send('next')}>Change</button> 
         </div>
       </main>
     </div>
   );
 }
+
+
 
 export default App;
